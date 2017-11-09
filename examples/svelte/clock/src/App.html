@@ -56,10 +56,11 @@
 
 <script>
 	import { connect } from "../../../../svelte";
-	import { store, create } from "./timer";
+	import store from "./store";
+	import { create } from "./timer";
 
 	const mapToProps = ({ time }) => {
-		console.log('time', time);
+		// console.log('time', time);
 		return { time };
 	};
 
@@ -78,7 +79,7 @@
 
 		oncreate () {
 			connect(this, store, mapToProps);
-			this.interval = create(store);
+			this.interval = create();
 		},
 
 		ondestroy () {
