@@ -1,8 +1,14 @@
 <div>
     <h1>{{count}}</h1>
     <div>
+        <input bind:value='step' placeholder='Step'>
+    </div>
+    <div>
       <button on:click="increment(event)" class="button">+</button>
       <button on:click="decrement(event)" class="button">-</button>
+      <button on:click="incrementOf(parseInt(step), event)" class="button">+ {{step}}</button>
+      <button on:click="decrementOf(parseInt(step), event)" class="button">- {{step}}</button>
+      <button on:click="reset(event)" class="button">Reset</button>
     </div>
 </div>
 <hr />
@@ -13,12 +19,22 @@
     import { actions } from "../actions";
 
     const mapToProps = ({ count }) => ({ count });
-    const { decrement, increment } = getActions(store, actions);
+    const { decrement, increment, decrementOf, incrementOf } = getActions(store, actions);
 
     export default {
+        data () {
+			return {
+				step: 2
+			};
+		},
         methods: {
             decrement,
             increment,
+            decrementOf,
+            incrementOf,
+            reset() {
+                store.setState({ count: 0 });
+            }
         },
         oncreate() {
             connect(this, store, mapToProps);
@@ -30,5 +46,11 @@
 .button {
     font-size: 20px;
     min-width: 30px;
+}
+input {
+    width: 50px;
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
 }
 </style>
