@@ -4,7 +4,10 @@ export default function bindActions(actions, store) {
   let bound = {}
   for (let name in actions) {
     bound[name] = (...args) => {
-      let ret = actions[name](store.getState(), ...args)
+      let action = store.middlewares.reduce((newAction, middleware) => {
+        return middleware(store)(newAction)
+      }, actions[name])
+      let ret = action(store.getState(), ...args)
       if (ret != null) {
         if (ret.then) return ret.then(store.setState)
         store.setState(ret)
