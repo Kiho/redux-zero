@@ -1,18 +1,22 @@
-import { getList, postData, remove } from '../api';
+import { actions } from "../asyncActions";
+import * as api from '../api';
 
-const middleware = store => action => {
-    let meth;
-    let actionToText = String(action);
-    if (actionToText.indexOf('get,') > 7)
-        meth = getList;
-    if (actionToText.indexOf('post,') > 7)
-        meth = postData;
-    if (actionToText.indexOf('remove,') > 7)
-        meth = remove;
+function linkActions(actions) {
+    actions = typeof actions === "function" ? actions() : actions
+    let bound = {}
+    for (let name in actions) {
+        bound[name] = actions[name];
+    }  
+    return bound
+}
+
+const asyncActions = linkActions(actions);
+const middleware = store => (action, name) => {
+    const meth: any = Object.keys(asyncActions).find(x => x === name);
     if (meth) {
         store.setState({ loading: true });
-        return (state, path, body) => meth(path, body)
-                .then(data => ({ loading: false, [path]: data }))
+        return (state, path, body) => api[meth](path, body)
+                .then(data => ({ [path]: data, loading: false }))
                 .catch(error => ({ error, loading: false }))
     }
     return action;

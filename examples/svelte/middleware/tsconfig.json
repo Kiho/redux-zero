@@ -9,7 +9,7 @@
     "outDir": "build/js/",
     "noImplicitReturns": true,
     "allowSyntheticDefaultImports": true,
-    "lib": [ "dom", "es2015" ],
+    "lib": [ "dom", "es2015", "es2017.object" ],
     "typeRoots": [
       "./node_modules/@types"
     ]

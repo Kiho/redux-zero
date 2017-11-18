@@ -5,7 +5,7 @@ export default function bindActions(actions, store) {
   for (let name in actions) {
     bound[name] = (...args) => {
       let action = store.middlewares.reduce((newAction, middleware) => {
-        return middleware(store)(newAction)
+        return middleware(store)(newAction, name)
       }, actions[name])
       let ret = action(store.getState(), ...args)
       if (ret != null) {

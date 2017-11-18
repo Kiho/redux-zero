@@ -11,7 +11,7 @@
 <label><input bind:value='last' placeholder='last'></label>
 
 <div class='buttons'>
-    <button on:click='fetchData("people")'>fetch</button>
+    <button on:click='getList("people")'>fetch</button>
 	<button on:click='create()' disabled='{{!first || !last}}'>create</button>
 	<button on:click='update()' disabled='{{!first || !last || !selected}}'>update</button>
 	<button on:click='remove()' disabled='{{!selected}}'>delete</button>
@@ -46,10 +46,10 @@
 <script>
 	import { connect, getActions  }  from '../../../../../svelte';
     import store from "../store";
-    import { actions } from "../actions";
+    import { actions } from "../asyncActions";
 
     const mapToProps = ({ people, loading }) => ({ people, loading });
-	const { fetchData, postData, remove } = getActions(store, actions);
+	const { getList, postData, remove } = getActions(store, actions);
 	
 	export default {
 		data () {
@@ -98,7 +98,8 @@
 		},
 
 		methods: {
-			fetchData,
+			getList,
+
 			create () {
 				const { first, last, people } = this.get();
 
