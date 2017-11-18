@@ -11,8 +11,10 @@ function linkActions(actions) {
 }
 
 const asyncActions = linkActions(actions);
+const actionKeys = Object.keys(asyncActions);
+
 const middleware = store => (action, name) => {
-    const meth: any = Object.keys(asyncActions).find(x => x === name);
+    const meth: any = actionKeys.find(x => x === name);
     if (meth) {
         store.setState({ loading: true });
         return (state, path, body) => api[meth](path, body)
