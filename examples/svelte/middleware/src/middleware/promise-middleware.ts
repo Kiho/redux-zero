@@ -1,17 +1,10 @@
 import { actions } from "../asyncActions";
 import * as api from '../api';
 
-function linkActions(actions) {
-    actions = typeof actions === "function" ? actions() : actions
-    let bound = {}
-    for (let name in actions) {
-        bound[name] = actions[name];
-    }  
-    return bound
+function getActionKeys(actions) {
+    return Object.keys(typeof actions === "function" ? actions() : actions);
 }
-
-const asyncActions = linkActions(actions);
-const actionKeys = Object.keys(asyncActions);
+const actionKeys = getActionKeys(actions);
 
 const middleware = store => (action, name) => {
     const meth: any = actionKeys.find(x => x === name);
