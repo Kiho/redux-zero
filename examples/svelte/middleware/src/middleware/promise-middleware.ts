@@ -7,7 +7,7 @@ function getActionKeys(actions) {
 const actionKeys = getActionKeys(actions);
 
 const middleware = store => (action, name) => {
-    const meth: any = actionKeys.find(x => x === name);
+    const meth = actionKeys.find(x => x === name);
     if (meth) {
         store.setState({ loading: true });
         return (state, path, body) => api[meth](path, body)
