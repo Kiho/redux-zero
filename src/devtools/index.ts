@@ -1,2 +1,1 @@
-import devtoolsMiddleware from "./devtoolsMiddleware"
-export { devtoolsMiddleware }
+export { devtoolsMiddleware, connect } from "./devtoolsMiddleware"
