@@ -32,21 +32,25 @@ function replay(store, message) {
   }
 }
 
-function subscribe(store, middleware) {
-  if (middleware.initialized) return
-  devTools.subscribe(message => {
-    if (message.type === "DISPATCH") {
-      if (
-        message.payload.type === "JUMP_TO_ACTION" ||
-        message.payload.type === "JUMP_TO_STATE"
-      ) {
-        store.setState(JSON.parse(message.state))
-      } else if (message.payload.type === "TOGGLE_ACTION") {
-        replay(store, message)
-      }
+function update(message) {
+  if (message.type === "DISPATCH") {
+    if (
+      message.payload.type === "JUMP_TO_ACTION" ||
+      message.payload.type === "JUMP_TO_STATE"
+    ) {
+      this.setState(JSON.parse(message.state))
+    } else if (message.payload.type === "TOGGLE_ACTION") {
+      replay(this, message)
     }
-  })
-  middleware.initialized = true
+  }
+}
+
+function subscribe(store, middleware) {
+  if (!middleware.initialized) {
+    const storeUpdate = update.bind(store)
+    devTools.subscribe(storeUpdate)
+    middleware.initialized = true
+  }
 }
 
 const devtoolsMiddleware = store => next => action => {
@@ -65,4 +69,4 @@ if (window !== undefined && (<any>window).__REDUX_DEVTOOLS_EXTENSION__) {
   }
 }
 
-export { devtoolsMiddleware, connect }
+export { devtoolsMiddleware, connect, update }

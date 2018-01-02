@@ -1,1 +1,1 @@
-export { devtoolsMiddleware, connect } from "./devtoolsMiddleware"
+export { connect } from "./devtoolsMiddleware"
