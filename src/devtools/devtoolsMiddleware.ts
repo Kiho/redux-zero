@@ -15,6 +15,7 @@ function getOrAddAction(action, fn) {
 function replay(store, message) {
   const state = JSON.parse(message.state)
   for (let key in state.actionsById) {
+    console.log("replay", key, message.payload)
     setTimeout(() => {
       const thisAction = state.actionsById[key].action
       if (parseInt(key, 10) <= message.payload.id) {
@@ -24,7 +25,7 @@ function replay(store, message) {
           let found = (<any>nextActions).find(x => thisAction.type === x.key)
           if (found) {
             found.fn()
-            // console.log("replay", thisAction.type, store.getState())
+            console.log("replay", thisAction.type, store.getState())
           }
         }
       }
