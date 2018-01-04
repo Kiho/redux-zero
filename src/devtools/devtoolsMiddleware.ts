@@ -1,4 +1,4 @@
-let devTools
+let devTools = { devTools: null }
 let connect
 const nextActions = []
 const REPLAY_INTERVAL = 100
@@ -8,6 +8,7 @@ function getOrAddAction(action, fn) {
   if (!found) {
     found = { key: action.name, fn }
     nextActions.push(found)
+    console.log("getOrAddAction", found)
   }
   return found
 }
@@ -16,9 +17,9 @@ function replay(store, message) {
   const state = JSON.parse(message.state)
   for (let key in state.actionsById) {
     console.log("replay", key, message.payload)
-    setTimeout(() => {
-      const thisAction = state.actionsById[key].action
-      if (parseInt(key, 10) <= message.payload.id) {
+    const thisAction = state.actionsById[key].action
+    if (parseInt(key, 10) <= message.payload.id) {
+      setTimeout(() => {
         if (thisAction.type === "initialState") {
           store.setState(state.computedStates[0].state)
         } else {
@@ -28,8 +29,8 @@ function replay(store, message) {
             console.log("replay", thisAction.type, store.getState())
           }
         }
-      }
-    }, REPLAY_INTERVAL)
+      }, REPLAY_INTERVAL)
+    }
   }
 }
 
@@ -49,7 +50,7 @@ function update(message) {
 function subscribe(store, middleware) {
   if (!middleware.initialized) {
     const storeUpdate = update.bind(store)
-    devTools.subscribe(storeUpdate)
+    devTools.devTools.subscribe(storeUpdate)
     middleware.initialized = true
   }
 }
@@ -57,17 +58,18 @@ function subscribe(store, middleware) {
 const devtoolsMiddleware = store => next => action => {
   let result = next(action)
   subscribe(store, devtoolsMiddleware)
+  console.log("devtoolsMiddleware", action)
   getOrAddAction(action, () => next(action))
-  devTools.send(action.name, store.getState())
+  devTools.devTools.send(action.name, store.getState())
   return result
 }
 
 if (window !== undefined && (<any>window).__REDUX_DEVTOOLS_EXTENSION__) {
   connect = function(initialState) {
-    devTools = (<any>window).__REDUX_DEVTOOLS_EXTENSION__.connect()
-    devTools.send("initialState", initialState)
+    devTools.devTools = (<any>window).__REDUX_DEVTOOLS_EXTENSION__.connect()
+    devTools.devTools.send("initialState", initialState)
     return devtoolsMiddleware
   }
 }
 
-export { devtoolsMiddleware, connect, update }
+export { devtoolsMiddleware, connect, update, devTools, getOrAddAction }
