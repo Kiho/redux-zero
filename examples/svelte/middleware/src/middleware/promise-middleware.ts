@@ -6,19 +6,19 @@ function getActionKeys(actions) {
 }
 const actionKeys = getActionKeys(actions).map(x => ({ key: x[0], fn: String(x[1]) }));
 
-const middleware = store => (action, name) => {
+const middleware = store => next => action => {
     let actionToFn = String(action);
     const meth = actionKeys.find(x => {
-        // console.log('actionKeys.find', actionToFn == x.fn, name, actionToFn);
-        return actionToFn === x.fn && name === x.key;
+        return actionToFn === x.fn && action.name === x.key;
     });
     if (meth) {
         store.setState({ loading: true });
-        return (state, path, body) => api[meth.key](path, body)
+        const asyncAction = (state, path, body) => api[meth.key](path, body)
                 .then(data => ({ [path]: data, loading: false }))
-                .catch(error => ({ error, loading: false }))
+                .catch(error => ({ error, loading: false }));
+        return next(asyncAction)        
     }
-    return action;
+    return next(action);
 };
 
 export default middleware

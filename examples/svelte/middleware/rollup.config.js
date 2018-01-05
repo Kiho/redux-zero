@@ -33,5 +33,5 @@ export default {
 		format: 'iife',
 	},	
 	plugins,
-	sourceMap: false
+	sourcemap: true
 };

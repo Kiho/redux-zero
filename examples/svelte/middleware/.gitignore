@@ -10,7 +10,7 @@ obj/
 obj/
 [Rr]elease*/
 _ReSharper*/
-public/bundle.js
+public/bundle.*
 dist/*
 **/build/js/*
 **/packages/*
