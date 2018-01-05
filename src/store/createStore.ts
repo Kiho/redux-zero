@@ -1,9 +1,9 @@
 import Store from "../interfaces/Store"
 
-export default function createStore(state = {}, ...middlewares): Store {
+export default function createStore(state = {}, middleware = null): Store {
   const listeners = []
   return {
-    middlewares,
+    middleware,
     setState(update) {
       state =
         typeof update === "function"

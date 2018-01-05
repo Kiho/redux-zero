@@ -38,6 +38,8 @@ dist/
 /interfaces/
 /utils/
 /store/
+/vue/
+/middleware/
 index.d.ts
 
 # Optional npm cache directory

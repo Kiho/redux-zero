@@ -1,5 +1,49 @@
 # Changelog
 
+### 4.8.1
+
+- Fix a bug of middleware
+
+### 4.8.0
+
+- Add bindActions export
+
+```js
+import { bindActions } from 'redux-zero/utils'
+```
+
+### 4.7.0
+
+- Add Vue.js bindings
+
+### 4.6.0
+
+- Adds middleware support:
+
+```js
+// a middleware
+const logger = (store) => (next) => (action) => {
+  console.log('current state', store.getState())
+  return next(action);
+}
+
+// compose middlewares
+const middlewares = applyMiddleware(
+  logger,
+  anotherMiddleware
+);
+
+const store = createStore({}, middlewares);
+```
+
+### 4.5.2
+
+- Fixes bug in which ownProps were not being passed as the second argument to mapToProps inside a connect HOC
+
+### 4.5.1
+
+- Shallow clone mutated object and array in Svelte bindig
+
 ### 4.5.0
 
 - Adds Thennable actions. Now we can declare actions as so:

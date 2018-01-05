@@ -20,6 +20,8 @@
 - [Installation](#installation)
 - [How](#how)
 - [Example](#example)
+- [Async](#async)
+- [Middleware](#middleware)
 - [Inspiration](#inspiration)
 - [Roadmap](#roadmap)
 - [Tools](#tools)
@@ -62,8 +64,20 @@ const { Provider, connect } = require("redux-zero/react")
 **UMD:**
 
 ```html
+<!-- the store -->
 <script src="https://unpkg.com/redux-zero/dist/redux-zero.min.js"></script>
+
+<!-- for react -->
 <script src="https://unpkg.com/redux-zero/react/index.min.js"></script>
+
+<!-- for preact -->
+<script src="https://unpkg.com/redux-zero/preact/index.min.js"></script>
+
+<!-- for vue -->
+<script src="https://unpkg.com/redux-zero/vue/index.min.js"></script>
+
+<!-- for svelte -->
+<script src="https://unpkg.com/redux-zero/svelte/index.min.js"></script>
 ```
 
 ## Example
@@ -145,14 +159,88 @@ Here's the full version: [https://codesandbox.io/s/n5orzr5mxj](https://codesandb
 - [React](https://github.com/concretesolutions/redux-zero/tree/master/examples/react/counter)
 - [Preact](https://github.com/concretesolutions/redux-zero/tree/master/examples/preact/counter)
 - [React Native](https://github.com/concretesolutions/redux-zero/tree/master/examples/react-native/counter)
+- [SSR](https://github.com/concretesolutions/redux-zero/tree/master/examples/react/ssr)
 - [Svelte](https://github.com/concretesolutions/redux-zero/tree/master/examples/svelte/counter)
+- [Vue](https://github.com/concretesolutions/redux-zero/tree/master/examples/vue/counter)
+
+## Async
+
+Async actions in Redux Zero are almost as simple as sync ones. Here's an example:
+
+```js
+const mapActions = ({ setState }) => ({
+  getTodos() {
+    setState({ loading: true });
+
+    return client.get("/todos")
+      .then(payload => ({ payload, loading: false }))
+      .catch(error => ({ error, loading: false }))
+  }
+});
+```
+
+They're still pure functions. You'll need to invoke `setState` if you have a loading status. But at the end, it's the same, just return whatever the updated state that you want.
+
+And here's how easy it is to test this:
+
+```js
+describe("todo actions", () => {
+  let actions, store, listener, unsubscribe;
+  beforeEach(() => {
+    store = createStore();
+    actions = getActions(store);
+    listener = jest.fn();
+    unsubscribe = store.subscribe(listener);
+  });
+
+  it("should fetch todos", () => {
+    nock("http://someapi.com/")
+      .get("/todos")
+      .reply(200, { id: 1, title: "test stuff" });
+
+    return actions.getTodos().then(() => {
+      const [LOADING_STATE, SUCCESS_STATE] = listener.mock.calls.map(
+        ([call]) => call
+      );
+
+      expect(LOADING_STATE.loading).toBe(true);
+      expect(SUCCESS_STATE.payload).toEqual({ id: 1, title: "test stuff" });
+      expect(SUCCESS_STATE.loading).toBe(false);
+    });
+  });
+});
+```
+
+## Middleware
+
+The method signature for the middleware was inspired by redux. The main difference is that action is just a function:
+
+```js
+/* store.js */
+import createStore from "redux-zero";
+import { applyMiddleware } from "redux-zero/middleware"
+
+const logger = (store) => (next) => (action) => {
+  console.log('current state', store.getState())
+  return next(action);
+}
+
+const initialState = { count: 1 };
+const middlewares = applyMiddleware(
+  logger,
+  anotherMiddleware
+);
+
+const store = createStore(initialState, middlewares);
+
+export default store;
+```
 
 ## Inspiration
 **Redux Zero** was based on this [gist](https://gist.github.com/developit/55c48d294abab13a146eac236bae3219) by [@developit](https://github.com/developit)
 
 ## Roadmap
 - Add more examples (including unit tests, SSR, etc)
-- Add middleware
 
 ## Tools
 These are unofficial tools, maintained by the community:
