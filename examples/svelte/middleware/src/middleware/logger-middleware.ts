@@ -1,7 +1,8 @@
 const middleware = store => next => action => {
-  console.log('states', store.getState()) // okay, we can console.log state on every action execution
-  console.log('action', action.name) // some function. which function?
-  return next(action);
-  // return highOrderFunction(action) // add some high order fn?
+  console.log("state before change", store.getState());
+  const result = next(action).then(() => {
+    console.log("state after change", store.getState());
+  }); 
+  return result;
 }
 export default middleware
