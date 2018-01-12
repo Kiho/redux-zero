@@ -14,6 +14,7 @@ export default function bindActions(actions, store) {
 
       return set(store, action(store.getState(), ...args))
     }
+    bound[name].key = name
   }
 
   return bound

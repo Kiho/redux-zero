@@ -4,9 +4,10 @@ const nextActions = []
 const REPLAY_INTERVAL = 10
 
 function getOrAddAction(action, fn) {
-  let found = (<any>nextActions).find(x => action.name === x.key)
-  if (!found) {
-    found = { key: action.name, fn }
+  let found = (<any>nextActions).find(x => action.key === x.key)
+  console.log('action.key', action.key)
+  if (!found && action.key) {
+    found = { key: action.key, fn }
     nextActions.push(found)
   }
   return found
@@ -60,7 +61,7 @@ const devtoolsMiddleware = store => next => action => {
   let result = next(action)
   subscribe(store, devtoolsMiddleware)
   getOrAddAction(action, () => next(action))
-  devTools.instance.send(action.name, store.getState())
+  devTools.instance.send(action.key, store.getState())
   return result
 }
 

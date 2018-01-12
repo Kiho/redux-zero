@@ -62,8 +62,9 @@ describe("devtoolsMiddleware", () => {
 
     devTools.instance = { send: () => {}, subscribe: () => {} }
 
-    Object.keys(actions).forEach(key => {
-      getOrAddAction({ name: key }, actions[key])
+    Object.keys(actions).forEach(key => { 
+      console.log('keys', key, actions[key].key)     
+      getOrAddAction(actions[key], actions[key])
     })
     expect(store.getState().count).toBe(1)
 
@@ -73,7 +74,8 @@ describe("devtoolsMiddleware", () => {
 
     expect(setTimeout).toHaveBeenCalledTimes(2)
     expect(store.getState()).toEqual({ count: 2 })
-
+    
+    console.log('toggleAction2')
     const toggleAction2 = { ...toggleAction }
     toggleAction2.payload.id = 2
     storeUpdate(toggleAction2)
