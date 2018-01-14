@@ -1,5 +1,17 @@
 # Changelog
 
+### 4.9.2
+
+- Add hot module reloading support to React `connect()` decorator
+
+### 4.9.1
+
+- Disable generation of source maps
+
+### 4.9.0
+
+- Add DevTools middleware
+
 ### 4.8.1
 
 - Fix a bug of middleware

@@ -43,7 +43,7 @@ function getConfig(input, file) {
   const conf = {
     input,
     name: 'redux-zero',
-    sourcemap: true,
+    sourcemap: false,
     external: getExternals(file),
     output: {
       file: getFileName(file),
@@ -74,6 +74,7 @@ const config = [
   getConfig('./src/vue/index.ts', 'vue/index'),
   getConfig('./src/middleware/index.ts', 'middleware/index'),
   getConfig('./src/utils/index.ts', 'utils/index'),
+  getConfig('./src/devtools/index.ts', 'devtools/index'),
 ]
 
 export default config
