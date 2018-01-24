@@ -1,5 +1,10 @@
 import createStore from "redux-zero";
+import { applyMiddleware } from 'redux-zero/middleware';
+import { connect } from '../../../devtools';
 
-const initialState = { count: 1 };
+const initialState = { count: 1, loading: false, payload: {} };
 
-export default createStore(initialState);
+const middlewares = connect ? applyMiddleware(connect(initialState)): [];
+const store = createStore(initialState, middlewares);
+
+export default store;
