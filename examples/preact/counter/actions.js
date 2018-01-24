@@ -1,12 +1,4 @@
-import { getActions  }  from 'redux-zero/svelte';
-import store from "./store";
-
-const actions = ({setState, getState}) => ({
-  dispatch: (state, p) => {
-    return Object.assign(state, p);
-  },
-});
-const { dispatch } = getActions(store, actions);
+import { dispatch } from './store';
 
 const mapActions = ({setState, getState}) => ({
   decrement: state => ({ count: state.count - 1 }),
