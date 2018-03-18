@@ -19,8 +19,7 @@
     "build:umd": "cross-env NODE_ENV=umd rollup --config",
     "build:cjs": "cross-env NODE_ENV=cjs rollup --config",
     "build": "npm run build:umd && npm run build:cjs",
-    "prepublish": "npm run build",
-    "precommit": "npm run build"
+    "prepublish": "npm run build"
   },
   "author": "Matheus Lima <matheusml90@gmail.com>",
   "files": [
