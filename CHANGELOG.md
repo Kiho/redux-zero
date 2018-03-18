@@ -1,5 +1,125 @@
 # Changelog
 
+### 4.11.0
+
+- Add `combineActions` function
+
+```js
+import { combineActions } from 'redux-zero/utils';
+```
+
+### 4.10.1
+
+- Fix bug of devtools middleware - handle async actions
+
+### 4.10.0
+
+- Implement connect HOC decorator for preact
+
+### 4.9.2
+
+- Add hot module reloading support to React `connect()` decorator
+
+### 4.9.1
+
+- Disable generation of source maps
+
+### 4.9.0
+
+- Add DevTools middleware
+
+### 4.8.1
+
+- Fix a bug of middleware
+
+### 4.8.0
+
+- Add bindActions export
+
+```js
+import { bindActions } from 'redux-zero/utils'
+```
+
+### 4.7.0
+
+- Add Vue.js bindings
+
+### 4.6.0
+
+- Adds middleware support:
+
+```js
+// a middleware
+const logger = (store) => (next) => (action) => {
+  console.log('current state', store.getState())
+  return next(action);
+}
+
+// compose middlewares
+const middlewares = applyMiddleware(
+  logger,
+  anotherMiddleware
+);
+
+const store = createStore({}, middlewares);
+```
+
+### 4.5.2
+
+- Fixes bug in which ownProps were not being passed as the second argument to mapToProps inside a connect HOC
+
+### 4.5.1
+
+- Shallow clone mutated object and array in Svelte bindig
+
+### 4.5.0
+
+- Adds Thennable actions. Now we can declare actions as so:
+
+```js
+const mapActions = ({ setState }) => ({
+  getTodos() {
+    setState({ loading: true });
+
+    return client.get("/todos")
+      .then(payload => ({ payload, loading: false }))
+      .catch(error => ({ error, loading: false }))
+  }
+});
+```
+
+### 4.4.3
+
+- Removing peerDependencies from `package.json`
+
+### 4.4.2
+
+- Fix typings, remove unsubscribe from Store interface since isn't used
+
+[info] Using redux-zero along with TypeScript gives an error when implementing:
+`<Provider store={store}><Whatever/></Provider>` due to the actual store object
+and the expected attribute differ.
+
+- Added Store interface as signature for createStore function.
+
+### 4.4.1
+
+- Fixes Svelte connect function date object change detection
+
+### 4.4.0
+
+- Add Preact bindings
+
+### 4.3.1
+
+- Fixes binding imports with TypeScript
+
+This is now working for both TypeScript and JavaScript:
+
+```javascript
+import { Provider } from 'redux-zero/react'
+```
+
 ### 4.3.0
 
 - Add connect function for Svelte and usage example.

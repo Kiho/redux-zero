@@ -32,8 +32,16 @@ _site/
 # Dependency directory
 node_modules/
 dist/
+/preact/
 /react/
 /svelte/
+/interfaces/
+/utils/
+/store/
+/vue/
+/middleware/
+/devtools/
+index.d.ts
 
 # Optional npm cache directory
 .npm
