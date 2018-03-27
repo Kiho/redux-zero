@@ -1,0 +1,125 @@
+<!-- https://github.com/eugenkiss/7guis/wiki#crud -->
+<input placeholder='filter prefix' bind:value='prefix'>
+
+<select bind:value='i' size='5'>
+	{{#each filteredPeople as person, i}}
+		<option value='{{i}}'>{{person.last}}, {{person.first}}</option>
+	{{/each}}
+</select>
+
+<label><input bind:value='first' placeholder='first'></label>
+<label><input bind:value='last' placeholder='last'></label>
+
+<div class='buttons'>
+    <button on:click='getList("people")'>fetch</button>
+	<button on:click='create()' disabled='{{!first || !last}}'>create</button>
+	<button on:click='update()' disabled='{{!first || !last || !selected}}'>update</button>
+	<button on:click='remove()' disabled='{{!selected}}'>delete</button>
+</div>
+
+{{#if loading}}
+<img src="Loading_icon.gif" alt="Loading....">
+{{/if}}
+
+<style>
+	* {
+		font-family: inherit;
+		font-size: inherit;
+	}
+
+	input {
+		display: block;
+		margin: 0 0 0.5em 0;
+	}
+
+	select {
+		float: left;
+		margin: 0 1em 1em 0;
+		width: 14em;
+	}
+
+	.buttons {
+		clear: both;
+	}
+</style>
+
+<script>
+	import { connect, getActions  }  from '../../../../../svelte';
+    import store from "../store";
+    import { actions } from "../asyncActions";
+
+    const mapToProps = ({ people, loading }) => ({ people, loading });
+	const { getList, postData, remove } = getActions(store, actions);
+	
+	export default {
+		data () {
+			return {
+				prefix: '',
+				first: '',
+				last: '',
+				people: [],
+				loading: false,
+				selected: null
+			};
+		},
+
+		computed: {
+			selected: ( filteredPeople, i ) => {
+				return filteredPeople[i];
+			},
+
+			filteredPeople ( people, prefix ) {
+				if ( !prefix ) return people;
+
+				prefix = prefix.toLowerCase();
+				return people.filter( person => {
+					const name = `${person.last}, ${person.first}`;
+					return name.toLowerCase().startsWith( prefix );
+				});
+			}
+		},
+
+		oncreate () {
+			this.observe( 'selected', selected => {
+				if ( selected ) this.set( selected );
+			});
+			this.observe( 'loading', loading => {
+				if ( !loading ) {
+					const { people, i } = this.get();
+					this.set({
+						people,
+						first: '',
+						last: '',
+						i: i == -1 ? people.length - 1 : i
+					});
+				}
+			});
+			connect(this, store, mapToProps);
+		},
+
+		methods: {
+			getList,
+
+			create () {
+				const { first, last, people } = this.get();
+
+				postData('people', { first, last });
+				this.set({ i: -1 });
+			},
+
+			update () {
+				const { first, last, selected, people } = this.get();
+
+				selected.first = first;
+				selected.last = last;
+
+				this.set({ people, selected });
+			},
+
+			remove () {
+				const { people, selected, i } = this.get();
+				remove('people', selected)
+			}
+		}
+	};
+</script>
