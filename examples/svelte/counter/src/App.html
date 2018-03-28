@@ -4,10 +4,33 @@
 
 <script>
 import CounterComponent from "./components/Counter.html";
+import store from "./store";
+
+let myKey = 'my-app-1';
+let unsubscribe;
+let listener;
+
+function setLocalStorage(state) {
+    localStorage.setItem(myKey, JSON.stringify(state));
+    console.log("App.html - setLocalStorage(state)", state);
+}
 
 export default {
 	components: {
 		CounterComponent
 	},
+	oncreate() {
+		const json = localStorage.getItem(myKey);
+		if (json) {
+			store.setState(JSON.parse(json));
+			console.log("App.html - oncreate()", store.getState());
+		}
+		listener = setLocalStorage.bind(store);
+		unsubscribe = store.subscribe(listener);
+	},
+	ondestroy () {
+		unsubscribe(listener);
+		console.log('App.html - ondestory()');
+	}
 }
 </script>
